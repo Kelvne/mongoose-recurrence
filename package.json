@@ -1,0 +1,22 @@
+{
+  "name": "mongoose-recurrence",
+  "version": "0.0.1",
+  "description": "A mongoose plugin for recurrent events",
+  "main": "index.js",
+  "scripts": {
+    "test": "./node_modules/mocha/bin/mocha test --recursive",
+    "test:watch": "./node_modules/mocha/bin/mocha test --recursive --watch"
+  },
+  "repository": "git@github.com:Kelvne/mongoose-recurrence.git",
+  "author": "Kelvne Pechim <kelvne.pechim@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "bluebird": "^3.5.0",
+    "chai": "^4.0.0",
+    "eslint": "^3.19.0",
+    "lodash": "^4.17.4",
+    "mocha": "^3.4.2",
+    "mongoose": "^4.10.3",
+    "rrule": "^2.2.0"
+  }
+}
