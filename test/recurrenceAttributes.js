@@ -45,7 +45,6 @@ describe('Recurrence Attributes', () => {
       expect(eventObject.recurrence).to.have.property('rrule');
       const rrule = eventObject.recurrence.rrule;
       expect(rrule).to.have.property('freq', RRule.MONTHLY);
-      expect(rrule).to.deep.have.property('bymonthday', [today.getDate()]);
       expect(rrule).to.deep.have.property('dtstart', today);
       expect(rrule).to.have.property('bysetpos', -1);
       done();
@@ -66,21 +65,6 @@ describe('Recurrence Attributes', () => {
       const rrule = eventObject.recurrence.rrule;
       expect(rrule).to.have.property('count', 3);
       expect(rrule).to.have.property('interval', 2);
-      done();
-    });
-  });
-
-  it('should have the right bymonthday when set dtstart', done => {
-    let newEvent = new eventModel(event);
-    const MONTHLYDTSTART = recurrences.MONTHLYDTSTART;
-    newEvent = newEvent.addRecurrence(MONTHLYDTSTART);
-
-    newEvent.validate(err => {
-      expect(err).to.be.null;
-      const eventObject = newEvent.toObject();
-      const rrule = eventObject.recurrence.rrule;
-      expect(rrule).to.deep.have.property('dtstart', MONTHLYDTSTART.dtstart);
-      expect(rrule).to.deep.have.property('bymonthday', [MONTHLYDTSTART.dtstart.getDate()]);
       done();
     });
   });

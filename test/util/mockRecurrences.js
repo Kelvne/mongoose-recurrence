@@ -6,6 +6,9 @@ dateOne.setMonth(today.getMonth() - 1);
 const dateTwo = new Date();
 dateTwo.setDate(31);
 dateTwo.setMonth(today.getMonth() - 1);
+const dateThree = new Date();
+dateThree.setDate(1);
+dateThree.setMonth(today.getMonth() - 1);
 
 module.exports = {
   BIMONTHLY: {
@@ -24,6 +27,10 @@ module.exports = {
     freq: RRule.MONTHLY,
     dtstart: dateTwo,
     count: 12,
+  },
+  WEEKLY: {
+    freq: RRule.WEEKLY,
+    dtstart: dateThree,
   },
   EXCEPTION: {
     date: dateTwo,
