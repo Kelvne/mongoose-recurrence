@@ -56,7 +56,6 @@ module.exports = (schema, options = {}) => {
         rrule: {
           freq,
           dtstart: dtstart || today,
-          bysetpos: -1,
         }
       };
 
