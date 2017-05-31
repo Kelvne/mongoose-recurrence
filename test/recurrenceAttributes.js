@@ -46,7 +46,6 @@ describe('Recurrence Attributes', () => {
       const rrule = eventObject.recurrence.rrule;
       expect(rrule).to.have.property('freq', RRule.MONTHLY);
       expect(rrule).to.deep.have.property('dtstart', today);
-      expect(rrule).to.have.property('bysetpos', -1);
       done();
     });
   });
