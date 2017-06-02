@@ -35,6 +35,8 @@ module.exports = (schema, options = {}) => {
         updates: {},
       }],
       exclude: { type: [Date], default: [] },
+      // Allow user to add custom rules
+      advanced: {},
     }
   };
 
@@ -145,6 +147,7 @@ module.exports = (schema, options = {}) => {
 
         const startOfMonth = new Date(period);
         startOfMonth.setDate(1);
+        startOfMonth.setHours(0, 0, 0, 0);
         const endOfMonth = new Date(startOfMonth);
         endOfMonth.setMonth(startOfMonth.getMonth() + 1);
         endOfMonth.setDate(0);
