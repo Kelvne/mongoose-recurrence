@@ -1,4 +1,5 @@
-tests
+test
 .npmignore
 examples
 .eslintrc.json
+.editorconfig
