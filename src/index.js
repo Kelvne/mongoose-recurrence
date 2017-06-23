@@ -3,17 +3,6 @@ const _ = require('lodash');
 
 const today = require('./util/today.js');
 
-function ocurrencesFromDates(dates, selfObject) {
-  const ocurrences = _.map(dates, date => {
-    const ocurrence = selfObject;
-    ocurrence.referenceDate = date;
-
-    return ocurrence;
-  });
-
-  return ocurrences;
-}
-
 module.exports = (schema, options = {}) => {
   const selfSchema = schema;
 
@@ -58,7 +47,8 @@ module.exports = (schema, options = {}) => {
         rrule: {
           freq,
           dtstart: dtstart || today,
-        }
+          bysetpos: -1,
+        },
       };
 
       if (count) documentRecurrence.rrule.count = count;
@@ -80,14 +70,14 @@ module.exports = (schema, options = {}) => {
       const recurrenceRule = new RRule(selfObject.recurrence.rrule);
       const dates = recurrenceRule.all();
 
-      const ocurrences = _.map(dates, date => {
-        const ocurrence = selfObject;
-        ocurrence.referenceDate = date;
+      const occurrences = _.map(dates, date => {
+        const occurrence = selfObject;
+        occurrence.referenceDate = date;
 
-        return ocurrence;
+        return occurrence;
       });
 
-      return ocurrences;
+      return occurrences;
     } else {
       return null;
     }
@@ -103,7 +93,7 @@ module.exports = (schema, options = {}) => {
       updates,
     };
 
-    const exceptionIndex = _.findIndex(self[recurrencePath].exceptions, e => e.refDate === date);
+    const exceptionIndex = _.findIndex(self[recurrencePath].exceptions, e => e.refDate.getTime() === date.getTime());
 
     if (exceptionIndex >= 0) {
       self[recurrencePath].exceptions[exceptionIndex] = exception;
@@ -126,13 +116,16 @@ module.exports = (schema, options = {}) => {
   };
 
   /**
-   * Return all ocurrences at a given period
+   * Return all occurrences at a given period
    */
   selfSchema.methods.getInPeriod = function getInPeriod(period) {
     const self = this;
     const selfObject = self.toObject();
 
     const recurrenceRule = new RRule(selfObject[recurrencePath].rrule);
+    const excluded = selfObject[recurrencePath].exclude;
+
+    let occurrences;
 
     switch((Array.isArray(period) ? period.length : typeof period.getMonth)) {
       case 'function': {
@@ -154,14 +147,14 @@ module.exports = (schema, options = {}) => {
 
         const dates = recurrenceRule.between(startOfMonth, endOfMonth, true); // inc: true to get same, after and before
 
-        const ocurrences = _.map(dates, date => {
-          const ocurrence = Object.assign({}, selfObject);
-          ocurrence.referenceDate = date;
+        occurrences = _.map(dates, date => {
+          const occurrence = Object.assign({}, selfObject);
+          occurrence.referenceDate = date;
 
-          return ocurrence;
+          return occurrence;
         });
 
-        return ocurrences;
+        break;
       }
 
       case 2: {
@@ -177,19 +170,31 @@ module.exports = (schema, options = {}) => {
 
         const dates = recurrenceRule.between(period[0], period[1], true); // inc: true to get same, after and before
 
-        const occurrences = _.map(dates, date => {
-          const ocurrence = Object.assign({}, selfObject);
-          ocurrence.referenceDate = date;
+        occurrences = _.map(dates, date => {
+          const occurrence = Object.assign({}, selfObject);
+          occurrence.referenceDate = date;
 
-          return ocurrence;
+          return occurrence;
         });
 
-        return occurrences;
+        break;
       }
 
       default:
         throw Error("Parameter Error: period must be an array of 2 dates or one single date");
     }
+
+    if (excluded) {
+      occurrences = _.filter(occurrences, (occurrence) => {
+        const indexOnExcluded = _.findIndex(excluded, (date) => {
+          return (date.getTime() === occurrence.referenceDate.getTime());
+        });
+
+        return (indexOnExcluded === -1);
+      });
+    }
+
+    return occurrences;
   };
 
   /**
@@ -198,7 +203,7 @@ module.exports = (schema, options = {}) => {
   selfSchema.methods.deleteOne = function deleteOne(period) {
     const self = this;
 
-    const excludedIndex = _.findIndex(self[recurrencePath].exclude, period);
+    const excludedIndex = _.findIndex(self[recurrencePath].exclude, (date) => date.getTime() === period.getTime());
 
     if (excludedIndex >= 0) self[recurrencePath].exclude[excludedIndex] = period;
     else self[recurrencePath].exclude.push(period);

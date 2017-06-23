@@ -3,6 +3,8 @@ const today = new Date();
 const dateOne = new Date();
 dateOne.setDate(10);
 dateOne.setMonth(today.getMonth() - 1);
+const dateOneToExclude = new Date(dateOne);
+dateOneToExclude.setMonth(today.getMonth());
 const dateTwo = new Date();
 dateTwo.setDate(31);
 dateTwo.setMonth(today.getMonth() - 1);
@@ -40,4 +42,5 @@ module.exports = {
   },
   dateOne,
   dateTwo,
+  dateOneToExclude,
 };
