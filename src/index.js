@@ -3,17 +3,6 @@ const _ = require('lodash');
 
 const today = require('./util/today.js');
 
-function ocurrencesFromDates(dates, selfObject) {
-  const ocurrences = _.map(dates, date => {
-    const ocurrence = selfObject;
-    ocurrence.referenceDate = date;
-
-    return ocurrence;
-  });
-
-  return ocurrences;
-}
-
 module.exports = (schema, options = {}) => {
   const selfSchema = schema;
 
