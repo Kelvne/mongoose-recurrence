@@ -91,7 +91,7 @@ module.exports = (schema, options = {}) => {
       updates,
     };
 
-    const exceptionIndex = _.findIndex(self[recurrencePath].exceptions, e => e.refDate === date);
+    const exceptionIndex = _.findIndex(self[recurrencePath].exceptions, e => e.refDate.getTime() === date.getTime());
 
     if (exceptionIndex >= 0) {
       self[recurrencePath].exceptions[exceptionIndex] = exception;
@@ -185,7 +185,7 @@ module.exports = (schema, options = {}) => {
   selfSchema.methods.deleteOne = function deleteOne(period) {
     const self = this;
 
-    const excludedIndex = _.findIndex(self[recurrencePath].exclude, period);
+    const excludedIndex = _.findIndex(self[recurrencePath].exclude, (date) => date.getTime() === period.getTime());
 
     if (excludedIndex >= 0) self[recurrencePath].exclude[excludedIndex] = period;
     else self[recurrencePath].exclude.push(period);
