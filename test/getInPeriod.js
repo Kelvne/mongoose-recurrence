@@ -76,4 +76,19 @@ describe('getInPeriod method', () => {
       expect(allDates).to.be.eq(1);
     });
   });
+
+  it('return only not excluded occurrences', () => {
+    let newRecurrentDocument = newEvent.addRecurrence(recurrences.MONTHLYDTSTART);
+    newRecurrentDocument = newRecurrentDocument.deleteOne(recurrences.dateOneToExclude);
+    const toDate = new Date(recurrences.MONTHLYDTSTART.dtstart);
+    toDate.setMonth(toDate.getMonth() + 2);
+
+    const occurrences = newRecurrentDocument.getInPeriod([recurrences.MONTHLYDTSTART.dtstart, toDate]);
+
+    const foundExcluded = _.findIndex(occurrences, (occurrence) => {
+      return (occurrence.referenceDate.getTime() === recurrences.dateOneToExclude.getTime());
+    });
+
+    expect(foundExcluded).to.be.eq(-1);
+  });
 });
